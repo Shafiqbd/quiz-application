@@ -56,5 +56,5 @@
   // "window.zoomLevel": 0.5,
   "explorer.confirmDragAndDrop": false,
   "explorer.confirmDelete": false,
-  "editor.fontSize": 15
+  "editor.fontSize": 16
 }
