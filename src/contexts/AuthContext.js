@@ -29,7 +29,6 @@ export default function AuthProvider({ children }) {
   //signup
   const signup = async (email, password, userName) => {
     const auth = getAuth();
-    debugger;
     await createUserWithEmailAndPassword(auth, email, password);
     //update profile
     await updateProfile(auth.currentUser, {
