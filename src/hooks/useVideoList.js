@@ -12,7 +12,7 @@ export default function useVideoList(page) {
       // database related works
       const db = getDatabase();
       const videosRef = ref(db, "videos");
-      const videoQuery = query(videosRef, orderByKey(), startAt("" + page), limitToFirst(8));
+      const videoQuery = query(videosRef, orderByKey(), startAt("" + page), limitToFirst(10));
       try {
         setError(false);
         //request firebase database
@@ -31,6 +31,7 @@ export default function useVideoList(page) {
         setError(true);
       }
     }
+    // setTimeout(()=>{})
     fetchVideos();
   }, [page]);
 
