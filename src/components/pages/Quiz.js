@@ -1,6 +1,8 @@
+import { getDatabase, ref, set } from "firebase/database";
 import _ from "lodash";
 import React, { useEffect, useReducer, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 import useQuestionList from "../../hooks/useQuestionList";
 import Answers from "../Answers";
 import MiniPlayer from "../MiniPlayer";
@@ -28,6 +30,9 @@ const reducer = (state, action) => {
 
 export default function Quiz() {
   const { id } = useParams();
+  const { currentUser } = useAuth();
+  const navigate = useHistory();
+
   const { loading, questions, error } = useQuestionList(id);
   const [currentQues, setCurrentQues] = useState(0);
   const [qNa, dispatch] = useReducer(reducer, initialState);
@@ -39,8 +44,6 @@ export default function Quiz() {
     });
   }, [questions, dispatch]);
 
-  console.log("questions", qNa);
-
   const handleAnswerChange = (e, index) => {
     console.log("e", e, index);
     dispatch({
@@ -51,26 +54,30 @@ export default function Quiz() {
     });
   };
 
-  // const nextQuestion = () => {
-  //   debugger;
-  //   if (currentQues + 1 < questions.length) {
-  //     setCurrentQues((prevQues) => prevQues + 1);
-  //   }
-  // };
-
   const nextQuestion = () => {
     if (currentQues + 1 < questions.length) {
       setCurrentQues((prevCurrent) => prevCurrent + 1);
     }
   };
   const prevQuestion = () => {
-    debugger;
     if (currentQues >= 1 && currentQues <= questions.length) {
       setCurrentQues((current) => current - 1);
     }
   };
 
-  const anwsareSubmit = () => {};
+  const anwsareSubmit = async () => {
+    // debugger;
+    const db = getDatabase();
+    const { uid } = currentUser;
+    const resultRef = ref(db, `result/${uid}`);
+    await set(resultRef, {
+      [id]: qNa,
+    });
+    navigate.push({
+      pathname: `/result/${id}`,
+      state: { qNa },
+    });
+  };
 
   const percentage = questions.length > 0 ? ((currentQues + 1) / questions.length) * 100 : 0;
 
