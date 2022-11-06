@@ -1,3 +1,4 @@
+import _ from "lodash";
 import React, { useEffect, useReducer, useState } from "react";
 import { useParams } from "react-router-dom";
 import useQuestionList from "../../hooks/useQuestionList";
@@ -15,6 +16,10 @@ const reducer = (state, action) => {
         });
       });
       return action.value;
+    case "answare":
+      const cloneQuestion = _.cloneDeep(state);
+      cloneQuestion[action.questionId].options[action.optionIndex].checked = action.value;
+      return cloneQuestion;
 
     default:
       return state;
@@ -36,6 +41,39 @@ export default function Quiz() {
 
   console.log("questions", qNa);
 
+  const handleAnswerChange = (e, index) => {
+    console.log("e", e, index);
+    dispatch({
+      type: "answare",
+      questionId: currentQues,
+      optionIndex: index,
+      value: e.target.checked,
+    });
+  };
+
+  // const nextQuestion = () => {
+  //   debugger;
+  //   if (currentQues + 1 < questions.length) {
+  //     setCurrentQues((prevQues) => prevQues + 1);
+  //   }
+  // };
+
+  const nextQuestion = () => {
+    if (currentQues + 1 < questions.length) {
+      setCurrentQues((prevCurrent) => prevCurrent + 1);
+    }
+  };
+  const prevQuestion = () => {
+    debugger;
+    if (currentQues >= 1 && currentQues <= questions.length) {
+      setCurrentQues((current) => current - 1);
+    }
+  };
+
+  const anwsareSubmit = () => {};
+
+  const percentage = questions.length > 0 ? ((currentQues + 1) / questions.length) * 100 : 0;
+
   return (
     <>
       {!loading && questions.length === 0 && <div>No data found!</div>}
@@ -45,8 +83,8 @@ export default function Quiz() {
         <>
           <h1>{qNa[currentQues].title}</h1>
           <h4>Question can have multiple answers</h4>
-          <Answers options={qNa[currentQues].options} />
-          <ProgressBar />
+          <Answers options={qNa[currentQues].options} handleChange={handleAnswerChange} />
+          <ProgressBar progress={percentage} next={nextQuestion} prev={prevQuestion} submit={anwsareSubmit} />
           <MiniPlayer />
         </>
       )}
