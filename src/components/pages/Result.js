@@ -41,7 +41,7 @@ export default function Result() {
       {!loading && !error && answares.length > 0 && (
         <>
           <Summary score={score} noq={answares.length} />
-          <Analysis />
+          <Analysis answares={answares} />
         </>
       )}
     </>

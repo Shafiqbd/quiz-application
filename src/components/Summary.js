@@ -7,7 +7,7 @@ export default function Summary({ score, noq }) {
       <div className={classes.point}>
         <p className={classes.score}>
           Your score is <br />
-          {score} out of {noq}
+          {score} out of {noq * 5}
         </p>
       </div>
 
